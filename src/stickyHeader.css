@@ -1,0 +1,12 @@
+.react-bootstrap-table th {
+    background-color: #cccccc;
+    position: sticky;
+    top:0
+     }
+.stickyHeader {
+    position:sticky;
+    top:0
+}
+.react-bootstrap-table th[data-row-selection] {
+    width: 40px;
+}
