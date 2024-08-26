@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import AddPersonSource from './AddPersonSource';
 import DeletePersonSource from './DeletePersonSource';
+import cookie from "react-cookies";
 
 function PersonSourceTable() {
     const [data,setData] = React.useState([]);
@@ -15,9 +16,11 @@ function PersonSourceTable() {
     const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
     const [addOpen, setAddOpen] = React.useState(false);
     const [deleteOpen, setDeleteOpen] = React.useState(false);
+    const [sortModel, setSortModel] = React.useState([{field: 'person', sort: 'asc'}]);
 
     React.useEffect(() => {
         setData(entries)
+        setSortModel(cookie.load('assetTableSortModel'));
         //eslint-disable-next-line
     }, [entries]);
 
@@ -66,17 +69,17 @@ function PersonSourceTable() {
                 ]}
                 disableRowSelectionOnClick
                 experimentalFeatures={{ newEditingApi: true }}
-                initialState={{
-                    sorting: {
-                        sortModel: [{field: 'source', sort: 'asc'}]
-                    },
-                }}
                 onRowSelectionModelChange={(newRowSelectionModel) => {
                     setRowSelectionModel(newRowSelectionModel);
+                }}
+                onSortModelChange={(newSortModel) => {
+                    setSortModel(newSortModel);
+                    cookie.save('personSourceTableSortModel', newSortModel, {path: '/'});
                 }}
                 rows={data}
                 rowSelectionModel={rowSelectionModel}
                 slots = {{ toolbar: GridToolbar }}
+                sortModel={sortModel}
             />
         </Container>
             { addOpen ?
