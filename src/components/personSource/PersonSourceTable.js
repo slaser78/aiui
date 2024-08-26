@@ -6,7 +6,6 @@ import Container from "@mui/material/Container";
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import AddPersonSource from './AddPersonSource';
-import AddSourcePerson from './AddSourcePerson';
 import DeletePersonSource from './DeletePersonSource';
 
 function PersonSourceTable() {
@@ -14,8 +13,7 @@ function PersonSourceTable() {
     const urlValue = React.useContext(UrlContext);
     const entries = useAPI(urlValue.urlValue + `/personSource`);
     const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
-    const [addPersonSourceOpen, setAddPersonSourceOpen] = React.useState(false);
-    const [addSourcePersonOpen, setAddSourcePersonOpen] = React.useState(false);
+    const [addOpen, setAddOpen] = React.useState(false);
     const [deleteOpen, setDeleteOpen] = React.useState(false);
 
     React.useEffect(() => {
@@ -27,18 +25,13 @@ function PersonSourceTable() {
         setDeleteOpen(true);
     }
 
-    const handleAddPersonSource = () => {
-        setAddPersonSourceOpen(true);
-    }
-
-    const handleAddSourcePerson = () => {
-        setAddSourcePersonOpen(true);
+    const handleAddOpen = () => {
+        setAddOpen(true);
     }
 
     const handleClose = () => {
         setDeleteOpen(false);
-        setAddPersonSourceOpen(false);
-        setAddSourcePersonOpen(false);
+        setAddOpen(false);
     }
 
     return(
@@ -54,18 +47,10 @@ function PersonSourceTable() {
             </Typography>
             <Button
                 sx={{mb: 2}}
-                disabled={rowSelectionModel.length !== 1}
-                onClick={handleAddPersonSource}
+                onClick={handleAddOpen}
             >
-                Add Person to Source
+                Add
             </Button>
-                <Button
-                    sx={{mb: 2}}
-                    disabled={rowSelectionModel.length !== 1}
-                    onClick={handleAddSourcePerson}
-                >
-                    Add Source to Person
-                </Button>
             <Button
                 sx={{mb: 2}}
                 disabled={rowSelectionModel.length === 0}
@@ -94,19 +79,11 @@ function PersonSourceTable() {
                 slots = {{ toolbar: GridToolbar }}
             />
         </Container>
-            { addPersonSourceOpen ?
+            { addOpen ?
                 <AddPersonSource
-                    open={addPersonSourceOpen}
+                    open={addOpen}
                     onclose={handleClose}
-                    setAddPersonSourceOpen={setAddPersonSourceOpen}
-                    data={data}
-                    setData={setData}
-                /> : null}
-            { addSourcePersonOpen ?
-                <AddSourcePerson
-                    open={addSourcePersonOpen}
-                    onclose={handleClose}
-                    setAddSourcePersonOpen={setAddSourcePersonOpen}
+                    setAddOpen={setAddOpen}
                     data={data}
                     setData={setData}
                 /> : null}

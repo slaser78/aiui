@@ -16,7 +16,7 @@ const options = {
     }
 };
 
-const DeletePersonSource = (props) => {
+const DeleteSource = (props) => {
     const urlValue = React.useContext(UrlContext);
 
     const cancel = () => {
@@ -26,21 +26,19 @@ const DeletePersonSource = (props) => {
     return (
         <div>
             <Dialog open={props.open}>
-                <DialogTitle>Delete Person</DialogTitle>
+                <DialogTitle>Delete Source</DialogTitle>
                 <DialogContent>
                     <Formik
                         initialValues={{
-                            asset: '',
-                            ipAddress: '',
+                            authority: '',
                             description: ''
                         }}
                         enableReinitialize
                         onSubmit={ ()  => {
                             props.setDeleteOpen(false);
                             const dataDelete = [...(props.data)];
-                            let j = 0;
-                            for (j=0; j< props.rowSelectionModel.length; j++) {
-                                let dataValue = props.rowSelectionModel[j]
+                            for (let j=0; j< props.selectionModel.length; j++) {
+                                let dataValue = props.selectionModel[j]
                                 new Promise((resolve) => {
                                     setTimeout(() => {
                                         let item1 = "";
@@ -51,14 +49,14 @@ const DeletePersonSource = (props) => {
                                         }
                                         dataDelete.splice(item1, 1);
                                         props.setData([...dataDelete]);
+                                        axios.delete(urlValue.urlValue + `/source/${dataValue}`, options)
+                                            .then(() => {
+                                            }, (error) => {
+                                                console.log(error);
+                                            });
                                         resolve();
                                     }, 1000);
                                 })
-                                axios.delete(urlValue.urlValue + `/personSource/${dataValue}`, options)
-                                    .then(() => {
-                                    }, (error) => {
-                                        console.log(error);
-                                    });
                             }
                         }}
                     >
@@ -81,5 +79,4 @@ const DeletePersonSource = (props) => {
         </div>
     )
 };
-
-export default DeletePersonSource;
+export default DeleteSource;

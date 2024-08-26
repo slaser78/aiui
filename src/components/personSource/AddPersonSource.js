@@ -18,31 +18,36 @@ const options1 = {
     }
 };
 
-const AddSourcePerson = (props) => {
+const AddPersonSource = (props) => {
     const urlValue = React.useContext(UrlContext);
     const entry = useAPI(urlValue.urlValue+`/person`);
     const [persons, setPersons] = React.useState([]);
+    const entry1 = useAPI(urlValue.urlValue+`/source`);
+    const [sources, setSources] = React.useState([]);
 
     React.useEffect ( () => {
-        if (entry) {
+        if (entry && entry1) {
             setPersons(entry);
+            setSources(entry1);
         //eslint-disable-next-line
-        }},[entry]);
+        }},[entry, entry1]);
 
     const cancel = () => {
-        props.setAddPersonSourceOpen(false)
+        props.setAddOpen(false)
     };
 
-    const handleValueChange = (event, newValue, setFieldValue) => {
+    const handlePersonChange = (event, newValue, setFieldValue) => {
+        setFieldValue('persons', newValue);
+    };
+
+    const handleSourceChange = (event, newValue, setFieldValue) => {
         setFieldValue('sources', newValue);
     };
-
-    const source = 'JTT';
 
     return (
         <div>
             <Dialog open={props.open}>
-                <DialogTitle>Add Person to Source</DialogTitle>
+                <DialogTitle>Add Person/Source</DialogTitle>
                 <DialogContent>
                     <Formik
                         initialValues= {{
@@ -51,40 +56,58 @@ const AddSourcePerson = (props) => {
                         }}
                         enableReinitialize
                         onSubmit= { async values => {
-                            props.setAddPersonSourceOpen(false);
+                            props.setAddOpen(false);
                             var person2 = [];
-                            var i = 0;
-                            for (i = 0; i < values.persons.length; i++) {
+                            var source2 = [];
+                            var data2 = [...props.data];
+                            for (let i = 0; i < values.persons.length; i++) {
                                 person2.push(values.persons[i].name)
                             }
-                            await axios.post(urlValue.urlValue + `/addPersonsToSource?source=${source}&persons=${person2}`, options1)
+                            for (let j = 0; j < values.sources.length; j++) {
+                                source2.push(values.sources[j].name)
+                            }
+                            await axios.post(urlValue.urlValue + `/addPersonsSources?sources=${source2}&persons=${person2}`, options1)
                                 .then((response) => {
+                                    const data3 = response.data;
+                                    for (let j = 0; j < data3.data.length; j++) {
+                                        data2.push(data3.data[j]);
+                                    }
                                 }, (error) => {
                                     console.log("API Error: ", error);
                                 })
+                                props.setData(data2)
                         }}
                     >
                         {({setFieldValue}) => (
                             <Form>
-                                <div className='row'>
-                                    <div className="form-group">
-                                        <span><label className="control-label">Source: </label>
-                                            {source}</span>
-                                    </div>
-                                </div>
-                                <br/>
                                 <br/>
                                 <Autocomplete
                                     multiple
                                     id="tags-standard"
                                     options={persons}
                                     getOptionLabel={(option) => option.name}
-                                    onChange={(event, value) => handleValueChange(event, value, setFieldValue)}
+                                    onChange={(event, value) => handlePersonChange(event, value, setFieldValue)}
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
                                             variant="standard"
                                             placeholder="Persons"
+                                        />
+                                    )}
+                                />
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    multiple
+                                    id="tags-standard"
+                                    options={sources}
+                                    getOptionLabel={(option) => option.name}
+                                    onChange={(event, value) => handleSourceChange(event, value, setFieldValue)}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            variant="standard"
+                                            placeholder="Sources"
                                         />
                                     )}
                                 />
@@ -96,13 +119,13 @@ const AddSourcePerson = (props) => {
                                 </span>
                             </Form>
                         )}
-                    </Formik>
-                </DialogContent>
-            </Dialog>
-        </div>
-    )
+                </Formik>
+            </DialogContent>
+        </Dialog>
+</div>
+)
 };
 
-export default AddSourcePerson
+export default AddPersonSource
 
 
