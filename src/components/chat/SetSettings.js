@@ -17,19 +17,22 @@ const options = {
         'Access-Control-Allow-Origin': '*',
     }
 };
+const person = localStorage.getItem('username');
 
 const SetSettings = (props) => {
     const urlValue = React.useContext(UrlContext);
-    const [value, setValue] = React.useState(null);
+    const [value, setValue] = React.useState("");
     const [type1, setType1] = React.useState([]);
-    const entry = useAPI(urlValue.urlValue + "/type1");
-    const entry1 = useAPI(urlValue.urlValue + "chat")
+    const entry = useAPI(urlValue.urlValue + `/type1`);
+    const entry1 = useAPI(urlValue.urlValue + `/getChatSettings?person=${person}`)
 
-        React.useEffect(() => {
+    React.useEffect(() => {
+        if (entry && entry1) {
             setType1(entry);
-            setValue(entry1.accuracy)
-            //eslint-disable-next-line
-        }, [entry, entry1]);
+            setValue(entry1.accuracy);
+        }
+        //eslint-disable-next-line
+    }, [entry, entry1]);
 
     const cancel = () => {
         props.setSettingsOpen(false)
@@ -39,7 +42,7 @@ const SetSettings = (props) => {
         setValue(newValue);
     };
 
-
+    
     return (
         <div>
             <Dialog open={props.open}>
@@ -52,15 +55,13 @@ const SetSettings = (props) => {
                         }}
                         enableReinitialize
                         onSubmit={ async values  => {
-                            props.setDeleteOpen(false);
-                            localStorage.setItem("accuracy", values.accuracy)
-                            let type11 = '';
-                            type1.map(t => (t.type1 === values.type1) ? type11 = t.id : null)
+                            props.setSettingsOpen(false);
                             const body = {
-                                accuracy: values.accuracy,
-                                type1: type11
+                                accuracy: value,
+                                type1: values.type1
                             };
-                            await axios.post(urlValue.urlValue + `/person`, body, options)
+                            console.log("Body", body);
+                            await axios.post(urlValue.urlValue + `/setChatSettings`, body, options)
                                 .then((response) => {
                                     props.setData([...props.data, response.data])
                                 }, (error) => {
@@ -75,7 +76,6 @@ const SetSettings = (props) => {
                                         <ul><label className="control-label">Accuracy: </label></ul>
                                         <ul><Box sx={{ width: 200 }}>
                                             <Slider
-                                                aria-label="Accuracy"
                                                 valueLabelDisplay="auto"
                                                 shiftStep={0.7}
                                                 step={0.1}
@@ -93,7 +93,6 @@ const SetSettings = (props) => {
                                         <ul><label className="control-label">Type: </label></ul>
                                         <ul><Autocomplete
                                             name="type1"
-                                            defaultValue={type1[0]}
                                             suggestions={type1.map((option) => {
                                                 return (
                                                     option.type1

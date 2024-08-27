@@ -2,7 +2,7 @@ import React from "react";
 import Chatbot from "react-chatbot-kit";
 import 'react-chatbot-kit/build/main.css';
 import Container from '@mui/material/Container';
-import './chatContainer.css'
+import './chatContainer.css';
 import SetSettings from "./SetSettings";
 
 import config from "./chatbotConfig";
@@ -10,23 +10,16 @@ import MessageParser from "./MessageParser";
 import ActionProvider from "./ActionProvider";
 import Typography from '@mui/material/Typography';
 import Button from "@mui/material/Button";
-import DocumentOpen from "./DocumentOpen";
 
 function Chat() {
     const [settingsOpen, setSettingsOpen] = React.useState(false);
-    const [documentOpen, setDocumentOpen] = React.useState(false);
 
     const handleSettingsOpen = () => {
-        setSettingsOpen (true);
-    }
-
-    const handleDocumentOpen = () => {
-        setDocumentOpen (true)
+        setSettingsOpen(true);
     }
 
     const handleClose = () => {
         setSettingsOpen(false);
-        setDocumentOpen(false);
     }
     return (
         <>
@@ -43,12 +36,6 @@ function Chat() {
                 </Typography>
                 <Button
                     sx={{mb: 2}}
-                    onClick={handleDocumentOpen}
-                >
-                    Document
-                </Button>
-                <Button
-                    sx={{mb: 2}}
                     onClick={handleSettingsOpen}
                 >
                     Settings
@@ -59,21 +46,15 @@ function Chat() {
                     actionProvider={ActionProvider}
                 />
             </div>
-        </Container>
+            </Container>
         { settingsOpen ?
             <SetSettings
-                open={setSettingsOpen}
+                open={settingsOpen}
                 onclose={handleClose}
                 setSettingsOpen={setSettingsOpen}
-            /> : null}
-        { DocumentOpen ?
-            <SetSettings
-                open={documentOpen}
-                onclose={handleClose}
-                setDocumentOpen={setDocumentOpen}
-            /> : null}
-        </>
-    );
+        /> : null}
+    </>
+    )
 }
 
 export default Chat;
