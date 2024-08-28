@@ -2,13 +2,15 @@ import React from "react";
 import {UrlContext} from "../../context";
 import axios from "axios";
 import {Formik } from 'formik';
-import {Form, Autocomplete} from "react-formik-ui";
+import {Form} from "react-formik-ui";
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import useAPI from "../../useAPI";
 import Slider from '@mui/material/Slider';
 import Box from '@mui/material/Box';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
 
 const options = {
     headers: {
@@ -21,15 +23,17 @@ const person = localStorage.getItem('username');
 
 const SetSettings = (props) => {
     const urlValue = React.useContext(UrlContext);
-    const [value, setValue] = React.useState("");
-    const [type1, setType1] = React.useState([]);
+    const [accuracyValue, setAccuracyValue] = React.useState("");
+    const [allTypesValues, setAllTypesValues] = React.useState([]);
+    const [typeValue, setTypeValue] = React.useState([]);
     const entry = useAPI(urlValue.urlValue + `/type1`);
     const entry1 = useAPI(urlValue.urlValue + `/getChatSettings?person=${person}`)
 
     React.useEffect(() => {
         if (entry && entry1) {
-            setType1(entry);
-            setValue(entry1.accuracy);
+            setAllTypesValues(entry);
+            setAccuracyValue(entry1.accuracy)
+            setTypeValue(entry1.type1);
         }
         //eslint-disable-next-line
     }, [entry, entry1]);
@@ -39,7 +43,7 @@ const SetSettings = (props) => {
     };
 
     const handleChange = (event, newValue) => {
-        setValue(newValue);
+        setAccuracyValue(newValue);
     };
 
     
@@ -56,12 +60,8 @@ const SetSettings = (props) => {
                         enableReinitialize
                         onSubmit={ async values  => {
                             props.setSettingsOpen(false);
-                            const body = {
-                                accuracy: value,
-                                type1: values.type1
-                            };
-                            console.log("Body", body);
-                            await axios.post(urlValue.urlValue + `/setChatSettings`, body, options)
+                            const person = localStorage.getItem("username")
+                            await axios.post(urlValue.urlValue + `/setChatSettings?accuracy=${accuracyValue}&type1=${typeValue}&person=${person}`, options)
                                 .then((response) => {
                                     props.setData([...props.data, response.data])
                                 }, (error) => {
@@ -82,7 +82,7 @@ const SetSettings = (props) => {
                                                 marks
                                                 min={-1.0}
                                                 max={1.0}
-                                                value={value} onChange={handleChange} />
+                                                value={accuracyValue} onChange={handleChange} />
                                         </Box>
                                         </ul>
                                     </div>
@@ -92,12 +92,11 @@ const SetSettings = (props) => {
                                     <div className="form-group">
                                         <ul><label className="control-label">Type: </label></ul>
                                         <ul><Autocomplete
-                                            name="type1"
-                                            suggestions={type1.map((option) => {
-                                                return (
-                                                    option.type1
-                                                )
-                                            })}
+                                            options={allTypesValues}
+                                            value={typeValue}
+                                            sx={{ width: 300 }}
+                                            renderInput={(params) => <TextField {...params} label="Type" />}
+
                                         /></ul>
                                     </div>
                                 </div>
