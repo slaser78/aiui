@@ -21,15 +21,16 @@ const person = localStorage.getItem('username');
 
 const SetSettings = (props) => {
     const urlValue = React.useContext(UrlContext);
-    const [accuracyValue, setAccuracyValue] = React.useState("");
+    const [accuracyValue, setAccuracyValue] = React.useState(null);
     const entry = useAPI(urlValue.urlValue + `/getChatSettings?person=${person}`)
 
     React.useEffect(() => {
         if (entry) {
-            setAccuracyValue(entry)
+            setAccuracyValue(entry.accuracy)
         }
         //eslint-disable-next-line
     }, [entry]);
+
 
     const cancel = () => {
         props.setSettingsOpen(false)

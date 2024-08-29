@@ -10,7 +10,6 @@ import Chat from '@mui/icons-material/Chat';
 import Feedback from '@mui/icons-material/Feedback';
 import EmojiPeople from '@mui/icons-material/EmojiPeople';
 import ManageAccounts from '@mui/icons-material/ManageAccounts';
-import TitleIcon from '@mui/icons-material/Title';
 import Security from '@mui/icons-material/Security';
 
 import Tooltip from '@mui/material/Tooltip';
@@ -68,14 +67,6 @@ export const secondaryListItems = (
                 </ListItemIcon>
             </Tooltip>
             <ListItemText primary="Person Source" />
-        </ListItemButton>
-        <ListItemButton href='/type'>
-            <Tooltip title="Type" placement="right">
-                <ListItemIcon>
-                    <TitleIcon />
-                </ListItemIcon>
-            </Tooltip>
-            <ListItemText primary="Type" />
         </ListItemButton>
         <ListItemButton href='/role'>
             <Tooltip title="Role" placement="right">

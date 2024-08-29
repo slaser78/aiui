@@ -23,7 +23,6 @@ import Person from "./components/person/PersonTable";
 import Role from "./components/role/RoleTable";
 import Document from "./components/document/DocumentTable";
 import PersonSource from "./components/personSource/PersonSourceTable";
-import Type1 from "./components/type/TypeTable";
 LicenseInfo.setLicenseKey('c7b965feb46d114c1411293e313f1868Tz04NDg2NCxFPTE3NDAyMjg1MTQwMDAsUz1wcmVtaXVtLExNPXN1YnNjcmlwdGlvbixLVj0y');
 
 const routes = {
@@ -35,7 +34,6 @@ const routes = {
     '/role': () => <Role />,
     '/document': () => <Document />,
     '/personSource': () => <PersonSource />,
-    '/type': () => <Type1 />
 }
 
 const drawerWidth = 240;
