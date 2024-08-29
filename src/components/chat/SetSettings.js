@@ -9,8 +9,6 @@ import DialogTitle from '@mui/material/DialogTitle';
 import useAPI from "../../useAPI";
 import Slider from '@mui/material/Slider';
 import Box from '@mui/material/Box';
-import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
 
 const options = {
     headers: {
@@ -24,19 +22,14 @@ const person = localStorage.getItem('username');
 const SetSettings = (props) => {
     const urlValue = React.useContext(UrlContext);
     const [accuracyValue, setAccuracyValue] = React.useState("");
-    const [allTypesValues, setAllTypesValues] = React.useState([]);
-    const [typeValue, setTypeValue] = React.useState([]);
-    const entry = useAPI(urlValue.urlValue + `/type1`);
-    const entry1 = useAPI(urlValue.urlValue + `/getChatSettings?person=${person}`)
+    const entry = useAPI(urlValue.urlValue + `/getChatSettings?person=${person}`)
 
     React.useEffect(() => {
-        if (entry && entry1) {
-            setAllTypesValues(entry);
-            setAccuracyValue(entry1.accuracy)
-            setTypeValue(entry1.type1);
+        if (entry) {
+            setAccuracyValue(entry)
         }
         //eslint-disable-next-line
-    }, [entry, entry1]);
+    }, [entry]);
 
     const cancel = () => {
         props.setSettingsOpen(false)
@@ -46,7 +39,6 @@ const SetSettings = (props) => {
         setAccuracyValue(newValue);
     };
 
-    
     return (
         <div>
             <Dialog open={props.open}>
@@ -55,13 +47,12 @@ const SetSettings = (props) => {
                     <Formik
                         initialValues={{
                             accuracy: '',
-                            type: ''
                         }}
                         enableReinitialize
                         onSubmit={ async values  => {
                             props.setSettingsOpen(false);
                             const person = localStorage.getItem("username")
-                            await axios.post(urlValue.urlValue + `/setChatSettings?accuracy=${accuracyValue}&type1=${typeValue}&person=${person}`, options)
+                            await axios.post(urlValue.urlValue + `/setChatSettings?accuracy=${accuracyValue}&person=${person}`, options)
                                 .then((response) => {
                                     props.setData([...props.data, response.data])
                                 }, (error) => {
@@ -80,24 +71,11 @@ const SetSettings = (props) => {
                                                 shiftStep={0.7}
                                                 step={0.1}
                                                 marks
-                                                min={-1.0}
+                                                min={0.1}
                                                 max={1.0}
                                                 value={accuracyValue} onChange={handleChange} />
                                         </Box>
                                         </ul>
-                                    </div>
-                                </div>
-                                <br/>
-                                <div className='row'>
-                                    <div className="form-group">
-                                        <ul><label className="control-label">Type: </label></ul>
-                                        <ul><Autocomplete
-                                            options={allTypesValues}
-                                            value={typeValue}
-                                            sx={{ width: 300 }}
-                                            renderInput={(params) => <TextField {...params} label="Type" />}
-
-                                        /></ul>
                                     </div>
                                 </div>
                                 <br/>
