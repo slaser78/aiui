@@ -37,7 +37,7 @@ const GetSources = (props) => {
 const GetSource = (props) => {
     const urlValue = React.useContext(UrlContext);
     const [source, setSource] = React.useState([]);
-    const entry = useAPI(urlValue.urlValue + `/getSource?person=${person}`)
+    const entry = useAPI(urlValue.urlValue + `/getChat?person=${person}`)
     React.useEffect(() => {
         setSource(entry)
         //eslint-disable-next-line
@@ -79,12 +79,6 @@ const SetSettings = (props) => {
         setAccuracyValue(newValue);
     };
 
-    const fetchedSource2 = GetSource();
-    const sourceIndexes = sources.map((source, index) => {
-        return fetchedSource2.findIndex(fetchedItem => fetchedItem.id === source.id) !== -1 ? index : -1;
-    }).filter(index => index !== -1);
-    console.log ("Source Indexes: " + sourceIndexes.toString());
-
     return (
         <div>
             <Dialog open={props.open}>
@@ -93,12 +87,13 @@ const SetSettings = (props) => {
                     <Formik
                         initialValues={{
                             accuracy: '',
+                            source: ''
                         }}
                         enableReinitialize
                         onSubmit={ async values  => {
                             props.setSettingsOpen(false);
                             const person = localStorage.getItem("username")
-                            await axios.post(urlValue.urlValue + `/setChatSettings?accuracy=${accuracyValue}&person=${person}&sources=${personSource}`, options)
+                            await axios.post(urlValue.urlValue + `/setChatSettings?accuracy=${accuracyValue}&person=${person}&source=${personSource.value}`, options)
                                 .then((response) => {
                                     props.setData([...props.data, response.data])
                                 }, (error) => {
@@ -129,11 +124,9 @@ const SetSettings = (props) => {
                                     <div className="form-group">
                                         <ul>
                                             <Autocomplete
-                                                multiple
                                                 options={sources}
                                                 sx={{width: 300}}
-                                                filterSelectedOptions
-                                                value={sources?.slice(sourceIndexes.toString())  || []}
+                                                value={personSource}
                                                 onChange={(event, newValue) => {
                                                     setPersonSource(newValue);  // Control the state based on changes
                                                 }}
@@ -142,8 +135,8 @@ const SetSettings = (props) => {
                                         </ul>
                                     </div>
                                 </div>
-                            <br/>
-                            <span><input className="btn-info m-2 p-2" type="submit"/>&nbsp;&nbsp;&nbsp;
+                                <br/>
+                                <span><input className="btn-info m-2 p-2" type="submit"/>&nbsp;&nbsp;&nbsp;
                                     <button className="btn-danger m-2 p-2" type='button'
                                             onClick={cancel}>Cancel</button>
                                     </span>
