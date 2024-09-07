@@ -34,10 +34,23 @@ const GetSources = (props) => {
     )
 }
 
+const GetChat = (props) => {
+    const urlValue = React.useContext(UrlContext);
+    const [chat, setChat] = React.useState([]);
+    const entry = useAPI(urlValue.urlValue + `/getChat?person=${person}`)
+    React.useEffect(() => {
+        setChat(entry)
+        //eslint-disable-next-line
+    }, [entry]);
+    return (
+        chat
+    )
+}
+
 const GetSource = (props) => {
     const urlValue = React.useContext(UrlContext);
     const [source, setSource] = React.useState([]);
-    const entry = useAPI(urlValue.urlValue + `/getChat?person=${person}`)
+    const entry = useAPI(urlValue.urlValue + `/getSource?person=${person}`)
     React.useEffect(() => {
         setSource(entry)
         //eslint-disable-next-line
@@ -50,26 +63,30 @@ const GetSource = (props) => {
 const SetSettings = (props) => {
     const urlValue = React.useContext(UrlContext);
     const [accuracyValue, setAccuracyValue] = React.useState(0.1);
-    const [source, setSource] = React.useState([]);
     const [sources, setSources] = React.useState([]);
-    const entry = useAPI(urlValue.urlValue + `/getChatSettings?person=${person}`)
+    const [source, setSource] = React.useState(null);
+    const [chat, setChat] = React.useState([]);
+
+    const entry = useAPI(urlValue.urlValue + `/getChatSettings?person=${person}`);
     const fetchedSources = GetSources();
-    const [personSource, setPersonSource] = React.useState(null);
     const fetchedSource = GetSource();
-    React.useEffect(() => {
-        // set 'source' state with fetchedSources
-        setSource(fetchedSources);
-        setPersonSource(fetchedSource);
-    }, [fetchedSources, fetchedSource]);
+    const fetchedChat = GetChat();
 
     React.useEffect(() => {
-        if (entry && source && personSource) {
-            setAccuracyValue(entry.accuracy ? entry.accuracy : 0.1)
-            setSources(source)
-            setPersonSource(personSource)
+        setSources(fetchedSources);
+        setSource(fetchedSource);
+        setChat(fetchedChat);
+    }, [fetchedSources, fetchedSource, fetchedChat]);
+
+    React.useEffect(() => {
+        if (entry && fetchedSources && fetchedSource && fetchedChat) {
+            setAccuracyValue(entry.accuracy ? entry.accuracy : 0.1);
+            setSource(fetchedSource);
+            setSources(fetchedSources);
+            setChat(fetchedChat);
         }
         //eslint-disable-next-line
-    }, [entry,source, personSource]);
+    }, [entry, fetchedSources, fetchedSource, fetchedChat]);
 
     const cancel = () => {
         props.setSettingsOpen(false)
@@ -86,14 +103,16 @@ const SetSettings = (props) => {
                 <DialogContent>
                     <Formik
                         initialValues={{
-                            accuracy: '',
-                            source: ''
+                            accuracy: 0.7,
+                            sources: sources,
+                            source: source,
+                            chat: chat
                         }}
                         enableReinitialize
                         onSubmit={ async values  => {
                             props.setSettingsOpen(false);
                             const person = localStorage.getItem("username")
-                            await axios.post(urlValue.urlValue + `/setChatSettings?accuracy=${accuracyValue}&person=${person}&source=${personSource.value}`, options)
+                            await axios.post(urlValue.urlValue + `/setChatSettings?accuracy=${accuracyValue}&person=${person}&source=${source.label}&id=${chat.id}`, options)
                                 .then((response) => {
                                     props.setData([...props.data, response.data])
                                 }, (error) => {
@@ -126,9 +145,10 @@ const SetSettings = (props) => {
                                             <Autocomplete
                                                 options={sources}
                                                 sx={{width: 300}}
-                                                value={personSource}
+                                                value={source}
+                                                getOptionLabel={(option) => option.label || ""}
                                                 onChange={(event, newValue) => {
-                                                    setPersonSource(newValue);  // Control the state based on changes
+                                                    setSource(newValue);  // Control the state based on changes
                                                 }}
                                                 renderInput={(params) => <TextField {...params} label="Sources"/>}
                                             />
