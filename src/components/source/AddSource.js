@@ -2,10 +2,11 @@ import React from "react";
 import {UrlContext} from "../../context";
 import axios from "axios";
 import {Formik, Field} from 'formik';
-import {Form, Checkbox} from "react-formik-ui";
+import {Form} from "react-formik-ui";
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import Checkbox from '@mui/material/Checkbox';
 
 const options = {
     headers: {
@@ -16,9 +17,20 @@ const options = {
 };
 const AddSource = (props) => {
     const urlValue = React.useContext(UrlContext);
+    const [enabled, setEnabled] = React.useState(false);
+    const [public1, setPublic1] = React.useState(false);
 
     const cancel = () => {
         props.setAddOpen(false)
+    };
+
+    const handleEnabledChange = (event) => {
+        setEnabled(event.target.checked);
+    };
+
+    const handlePublicChange = (event) => {
+        console.log ("Public: " + event.target.checked)
+        setPublic1(event.target.checked);
     };
 
     return (
@@ -34,20 +46,13 @@ const AddSource = (props) => {
                         enableReinitialize
                         onSubmit={ async values => {
                             props.setAddOpen(false);
-                            const body = {
-                                name: values.name,
-                                description: values.description,
-                                enabled: values.enabled,
-                                public1: values.public1
-                            };
-
-                        await axios.post(urlValue.urlValue + `/source`, body, options)
-                            .then((response) => {
-                                props.setData([...props.data, response.data])
-                            }, (error) => {
-                                console.log(error);
-                            })
-                        }}
+                            await axios.post(urlValue.urlValue + `/setNewSource?name=${values.name}&description=${values.description}&enabled=${enabled}&public1=${public1}`, options)
+                                .then((response) => {
+                                    props.setData([...props.data, response.data])
+                                }, (error) => {
+                                    console.log(error);
+                                })
+                            }}
                     >
                     {() => (
                         <Form>
@@ -77,7 +82,11 @@ const AddSource = (props) => {
                                 <div className="form-group">
                                     <label className="control-label">Enabled: </label>
                                     <br/>
-                                    <Checkbox name="enabled"/>
+                                    <Checkbox name="enabled"
+                                        checked={enabled}
+                                        onChange={handleEnabledChange}
+                                        inputProps={{'aria-label': 'Enabled'}}
+                                    />
                                 </div>
                             </div>
                             <br/>
@@ -85,7 +94,11 @@ const AddSource = (props) => {
                                 <div className="form-group">
                                     <label className="control-label">Public: </label>
                                     <br/>
-                                    <Checkbox name="public1"/>
+                                    <Checkbox name="public1"
+                                      checked={public1}
+                                      onChange={handlePublicChange}
+                                      inputProps={{'aria-label': 'Public'}}
+                                    />
                                 </div>
                             </div>
                             <br/>
