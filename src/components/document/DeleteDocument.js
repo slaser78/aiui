@@ -26,13 +26,11 @@ const DeleteDocument = (props) => {
     return (
         <div>
             <Dialog open={props.open}>
-                <DialogTitle>Delete Feedback</DialogTitle>
+                <DialogTitle>Delete Document</DialogTitle>
                 <DialogContent>
                     <Formik
                         initialValues={{
-                            asset: '',
-                            ipAddress: '',
-                            description: ''
+                            document: ''
                         }}
                         enableReinitialize
                         onSubmit={ ()  => {
@@ -50,7 +48,7 @@ const DeleteDocument = (props) => {
                                         }
                                         dataDelete.splice(item1, 1);
                                         props.setData([...dataDelete]);
-                                        axios.delete(urlValue.urlValue + `/feedback/${dataValue}`, options)
+                                        axios.delete(urlValue.urlValue + `/document/${dataValue}`, options)
                                             .then(() => {
                                             }, (error) => {
                                                 console.log(error);

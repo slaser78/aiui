@@ -47,7 +47,6 @@ function SourceTable() {
     const [addDocOpen, setAddDocOpen] = React.useState(false);
     const [deleteOpen, setDeleteOpen] = React.useState(false);
     
-
     React.useEffect(() => {
         setData(entries)
         //eslint-disable-next-line
@@ -139,7 +138,7 @@ function SourceTable() {
                 }}
                 onProcessRowUpdateError={handleProcessRowUpdateError}
                 onRowSelectionModelChange={(newSelectionModel) => {
-                    setSelectionModel(newSelectionModel);
+                    setSelectionModel(newSelectionModel)
                 }}
                 processRowUpdate={processRowUpdate}
                 rows={data}
@@ -179,6 +178,7 @@ function SourceTable() {
                     open={addDocOpen}
                     onclose={handleClose}
                     setAddDocOpen={setAddDocOpen}
+                    selectionModel={selectionModel}
                     data={data}
                 /> : null}
         </>

@@ -30,9 +30,7 @@ const DeletePersonSource = (props) => {
                 <DialogContent>
                     <Formik
                         initialValues={{
-                            asset: '',
-                            ipAddress: '',
-                            description: ''
+                            personSource: ''
                         }}
                         enableReinitialize
                         onSubmit={ ()  => {

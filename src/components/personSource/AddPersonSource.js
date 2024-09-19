@@ -22,7 +22,7 @@ const AddPersonSource = (props) => {
     const urlValue = React.useContext(UrlContext);
     const entry = useAPI(urlValue.urlValue+`/person`);
     const [persons, setPersons] = React.useState([]);
-    const entry1 = useAPI(urlValue.urlValue+`/source`);
+    const entry1 = useAPI(urlValue.urlValue+`/getSources1`);
     const [sources, setSources] = React.useState([]);
 
     React.useEffect ( () => {

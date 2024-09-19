@@ -24,7 +24,7 @@ export default function AddDocument (props) {
         props.setAddDocOpen(false);
         const fd = new FormData();
         fd.append ("file", selectedFile);
-        fd.append ("source", props.data[0].name);
+        fd.append ("source", "jllis");
         fd.append ("fileName", selectedFile.name)
 
         await axios({
@@ -45,7 +45,7 @@ export default function AddDocument (props) {
 
     return (
         <Dialog open={props.open}>
-            <DialogTitle>Add Document to: {props.data[0].name}</DialogTitle>
+            <DialogTitle>Add Document to: jllis</DialogTitle>
             <DialogContent>
                 <div className="row">
                     <input type = "file" onChange = {fileSelectedHandler} />
