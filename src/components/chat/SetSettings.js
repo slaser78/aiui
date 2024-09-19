@@ -62,7 +62,7 @@ const GetSource = (props) => {
 
 const SetSettings = (props) => {
     const urlValue = React.useContext(UrlContext);
-    const [accuracyValue, setAccuracyValue] = React.useState(0.1);
+    const [temperatureValue, setTemperatureValue] = React.useState(0.1);
     const [sources, setSources] = React.useState([]);
     const [source, setSource] = React.useState(null);
     const [chat, setChat] = React.useState([]);
@@ -80,7 +80,7 @@ const SetSettings = (props) => {
 
     React.useEffect(() => {
         if (entry && fetchedSources && fetchedSource && fetchedChat) {
-            setAccuracyValue(entry.accuracy ? entry.accuracy : 0.1);
+            setTemperatureValue(entry.temperature ? entry.temperature : 0.1);
             setSource(fetchedSource);
             setSources(fetchedSources);
             setChat(fetchedChat);
@@ -93,7 +93,7 @@ const SetSettings = (props) => {
     };
 
     const handleChange = (event, newValue) => {
-        setAccuracyValue(newValue);
+        setTemperatureValue(newValue);
     };
 
     return (
@@ -103,7 +103,7 @@ const SetSettings = (props) => {
                 <DialogContent>
                     <Formik
                         initialValues={{
-                            accuracy: 0.7,
+                            temperature: 0.7,
                             sources: sources,
                             source: source,
                             chat: chat
@@ -112,7 +112,7 @@ const SetSettings = (props) => {
                         onSubmit={ async values  => {
                             props.setSettingsOpen(false);
                             const person = localStorage.getItem("username")
-                            await axios.post(urlValue.urlValue + `/setChatSettings?accuracy=${accuracyValue}&person=${person}&source=${source.label}&id=${chat.id}`, options)
+                            await axios.post(urlValue.urlValue + `/setChatSettings?temperature=${temperatureValue}&person=${person}&source=${source.label}&id=${chat.id}`, options)
                                 .then((response) => {
                                     props.setData([...props.data, response.data])
                                 }, (error) => {
@@ -124,7 +124,7 @@ const SetSettings = (props) => {
                             <Form>
                                 <div className='row'>
                                     <div className="form-group">
-                                        <ul><label className="control-label">Accuracy: </label></ul>
+                                        <ul><label className="control-label">Temperature: </label></ul>
                                         <ul>
                                             <Box sx={{ width: 200 }}>
                                                 <Slider
@@ -133,8 +133,8 @@ const SetSettings = (props) => {
                                                     step={0.1}
                                                     marks
                                                     min={0.1}
-                                                    max={1.0}
-                                                    value={accuracyValue} onChange={handleChange} />
+                                                    max={2.0}
+                                                    value={temperatureValue} onChange={handleChange} />
                                             </Box>
                                         </ul>
                                     </div>
