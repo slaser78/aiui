@@ -162,10 +162,31 @@ function DocumentTable() {
             >
                 Delete
             </Button>
+            <Button
+                sx={{mb: 2}}
+                disabled={selectionModel.length !== 1}
+                onClick={handleDeleteRow}
+            >
+                Download
+            </Button>
+            <Button
+                sx={{mb: 2}}
+                disabled={selectionModel.length !== 1}
+                onClick={handleDeleteRow}
+            >
+                Head
+            </Button>
+            <Button
+                sx={{mb: 2}}
+                disabled={selectionModel.length !== 1}
+                onClick={handleDeleteRow}
+            >
+                Summary
+            </Button>
             <DataGridPremium
                 checkboxSelection
                 columns={[
-                        {headerName: 'Title', field: 'title', width: 750},
+                        {headerName: 'Title', field: 'title', width: 900},
                         {headerName: 'Source',
                             field: 'source',
                             editable: true,
