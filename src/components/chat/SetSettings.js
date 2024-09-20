@@ -24,11 +24,11 @@ const person = localStorage.getItem('username');
 const GetSources = (props) => {
     const urlValue = React.useContext(UrlContext);
     const [sources, setSources] = React.useState([]);
-    const entry = useAPI(urlValue.urlValue + `/getSources?person=${person}`)
+    const entries = useAPI(urlValue.urlValue + `/getSources?person=${person}`)
     React.useEffect(() => {
-        setSources(entry)
+        setSources(entries)
         //eslint-disable-next-line
-    }, [entry]);
+    }, [entries]);
     return (
         sources
     )
@@ -64,7 +64,7 @@ const SetSettings = (props) => {
     const urlValue = React.useContext(UrlContext);
     const [temperatureValue, setTemperatureValue] = React.useState(0.1);
     const [sources, setSources] = React.useState([]);
-    const [source, setSource] = React.useState(null);
+    const [source, setSource] = React.useState("None");
     const [chat, setChat] = React.useState([]);
 
     const entry = useAPI(urlValue.urlValue + `/getChatSettings?person=${person}`);
@@ -105,7 +105,7 @@ const SetSettings = (props) => {
                         initialValues={{
                             temperature: 0.7,
                             sources: sources,
-                            source: source,
+                            source: "None",
                             chat: chat
                         }}
                         enableReinitialize

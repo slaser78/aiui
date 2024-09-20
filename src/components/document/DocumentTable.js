@@ -13,6 +13,8 @@ import Typography from '@mui/material/Typography';
 import {UrlContext} from "../../context";
 import useAPI from "../../useAPI";
 
+const username = localStorage.getItem("username");
+
 const options = {
     headers: {
         'Accept': 'application/json',
@@ -93,7 +95,7 @@ function DocumentTable() {
     const mutateRow = useFakeMutation();
     const [data,setData] = React.useState([]);
     const urlValue = React.useContext(UrlContext);
-    const entries = useAPI(urlValue.urlValue+"/document");
+    const entries = useAPI(urlValue.urlValue+`/getDocuments?person=${username}`);
     const [selectionModel, setSelectionModel] = React.useState([]);
     const [sortModel, setSortModel] = React.useState([{field: 'name', sort: 'asc'}]);
     const [deleteOpen, setDeleteOpen] = React.useState(false);
@@ -163,7 +165,7 @@ function DocumentTable() {
             <DataGridPremium
                 checkboxSelection
                 columns={[
-                        {headerName: 'Title', field: 'title', width: 300},
+                        {headerName: 'Title', field: 'title', width: 750},
                         {headerName: 'Source',
                             field: 'source',
                             editable: true,

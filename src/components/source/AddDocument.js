@@ -19,12 +19,22 @@ export default function AddDocument (props) {
     const fileSelectedHandler = event => {
         setSelectedFile(event.target.files[0]);
     };
+    const [source, setSource] = useState("");
+
+    React.useEffect (() => {
+        let i
+        for (i = 0; i < props.data.length; i++) {
+            if (Number(props.data[i].id) === Number(props.selectionModel)) {
+                setSource (props.data[i].name)
+            }
+        }
+    },[props.selectionModel, props.data])
 
     const fileUploadHandler = async() => {
         props.setAddDocOpen(false);
         const fd = new FormData();
         fd.append ("file", selectedFile);
-        fd.append ("source", "jllis");
+        fd.append ("source", source);
         fd.append ("fileName", selectedFile.name)
 
         await axios({
@@ -45,7 +55,7 @@ export default function AddDocument (props) {
 
     return (
         <Dialog open={props.open}>
-            <DialogTitle>Add Document to: jllis</DialogTitle>
+            <DialogTitle>Add Document to: {source}</DialogTitle>
             <DialogContent>
                 <div className="row">
                     <input type = "file" onChange = {fileSelectedHandler} />
